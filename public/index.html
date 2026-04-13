@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!--DISPLAY STUDENTS LIST-->
+    <h1>STUDENTS LIST</h1>
+    <button onclick="loadStudents()">LOAD STUDENTS</button>
+    <ul id="list"></ul>
+
+    <!--ADD STUDENT-->
+    <h1>ADD STUDENT</h1>
+    <input type="text" name="name" id="name" placeholder="name">
+    <input type="text" name="course" id="course" placeholder="course">
+    <button onclick="addStudent()">ADD STUDENT</button>
+</body>
+<script>
+    const apiURL = `http://localhost:3000`
+    async function loadStudents() {
+        const res = await fetch(`${apiURL}/api/students`)
+        const data = await res.json()
+       
+        const list = document.getElementById('list')
+        list.innerHTML = ''
+
+        data.forEach((student) => {
+            const li = document.createElement('li')
+            li.textContent = `ID: ${student.id} - NAME: ${student.name} - COURSE: ${student.course}`
+            list.appendChild(li)
+        })
+    }
+
+    async function addStudent(){
+        const name = document.getElementById('name').value
+        const course = document.getElementById('course').value
+
+        const res = await fetch(`${apiURL}/api/students`, {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json',
+            },
+            body: JSON.stringify({name,course})
+        })
+        const data = await res.json()
+        console.log(data.student)
+        loadStudents()
+    }
+
+</script>
+</html>
